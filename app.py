@@ -52,7 +52,7 @@ def upload():
       json_data = request.get_json()
       filename = '{}.jpg'.format(str(uuid.uuid4()))
       image = base64.b64decode(json_data['file'])
-      with open(os.path.join('download',filename), 'wb') as f:
+      with open(os.path.join(os.environ['DOWNLOADS_LOCATION'], filename), 'wb') as f:
          f.write(image)
       response['status'] = 'succesful'
       response['message'] = 'The file is writed to filesystem'
