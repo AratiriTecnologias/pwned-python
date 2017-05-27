@@ -14,7 +14,6 @@ spec:
   - host: api.pwned-2017.ml
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: pwned-python-api
-          servicePort: 8080
+      - backend:
+        serviceName: pwned-python-api-backend
+        servicePort: 80
