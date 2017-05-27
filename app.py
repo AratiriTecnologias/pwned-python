@@ -41,11 +41,11 @@ def question():
       question_payload['method'] = 'push'
       question_payload['data'] = jsonify(json_data)
       firebase_url = "%s/publish" % os.environ['FIREBASE']
-      post_question_request = requests.post(firebase_url, data = jsonify(question_payload))
+      post_question_request = requests.post(firebase_url, data = question_payload)
       if post_question_request.status_code == '201':
         post_request_payload = post_question_request.json()
         language_question_url = "%s/question" % os.environ['LANGUAGE']
-        post_language_request = requests.post(language_question_url, data = jsonify(post_request_payload))
+        post_language_request = requests.post(language_question_url, data = post_request_payload)
         if post_language_request.status_code == '200':
            response = post_language_request
 
@@ -73,7 +73,7 @@ def upload():
       response['message'] = 'The file was written to the filesystem'
 
       vision_upload_url = "%s/detect" % os.environ['VISION']
-      response = requests.post(vision_upload_url, data = jsonify(response))
+      response = requests.post(vision_upload_url, data = response)
       # if post_vision_request.status_code == '200':
       #      response = post_vision_request
 
@@ -98,11 +98,11 @@ def message():
       message_payload['method'] = 'push'
       message_payload['data'] = jsonify(json_data)
       firebase_url = "%s/publish" % os.environ['FIREBASE']
-      post_message_request = requests.post(firebase_url, data = jsonify(message_payload))
+      post_message_request = requests.post(firebase_url, data = message_payload)
       if post_message_request.status_code == '201':
         post_request_payload = post_message_request.json()
         language_message_url = "%s/message" % os.environ['LANGUAGE']
-        post_language_request = requests.post(os.path.join(language_message_url, 'message'), data = jsonify(post_request_payload))
+        post_language_request = requests.post(os.path.join(language_message_url, 'message'), data = post_request_payload)
         if post_language_request.status_code == '200':
           response = post_language_request
 
