@@ -64,14 +64,18 @@ def upload():
   try:
       json_data = request.get_json()
       filename = '{}.jpg'.format(str(uuid.uuid4()))
+      filepath = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename)
       image = base64.b64decode(json_data['file'])
-      with open(os.path.join(os.environ['DOWNLOADS_LOCATION'], filename), 'wb') as f:
+      with open(filepath, 'wb') as f:
          f.write(image)
+      response['original_file'] = filepath
+      response['status'] = 'succesful'
+      response['message'] = 'The file was written to the filesystem'
 
       vision_upload_url = "%s/upload" % os.environ['VISION']
       post_vision_request = requests.post(vision_upload_url, data = jsonify(json_data))
-      if post_vision_request.status_code == '200':
-           response = post_vision_request
+      # if post_vision_request.status_code == '200':
+      #      response = post_vision_request
       
   except Exception as e:
       print('Error: {}'.format(e))
