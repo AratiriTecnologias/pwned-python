@@ -6,6 +6,7 @@ import base64
 import uuid
 import requests
 from flask import Flask, render_template, request, jsonify
+from helper import watermark
 
 app = Flask(__name__)
 
@@ -72,7 +73,7 @@ def upload():
       response['status'] = 'succesful'
       response['message'] = 'The file was written to the filesystem'
 
-      vision_upload_url = "%s/upload" % os.environ['VISION']
+      vision_upload_url = "%s/detect" % os.environ['VISION']
       post_vision_request = requests.post(vision_upload_url, data = jsonify(response))
       # if post_vision_request.status_code == '200':
       #      response = post_vision_request
@@ -80,7 +81,7 @@ def upload():
   except Exception as e:
       print('Error: {}'.format(e))
 
-  return jsonify(response)
+  return jsonify(post_vision_request)
 
 @app.route('/message', methods=['POST'])
 def message():
