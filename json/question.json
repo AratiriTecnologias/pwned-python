@@ -1,0 +1,11 @@
+{
+  "author": {"_id": "123", "displayName": "Ivan"},
+  "title" : "Este es un question",
+  "description": "This is a question description",
+  "assignee": {"_id": "1234", "displayName": "Astro"},
+  "participants": [
+    {"_id" : "12345", "displayName": "Martin"},
+    {"_id" :"12345", "displayName": "Pablo"}
+  ],
+  "status": "open"
+}

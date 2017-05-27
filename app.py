@@ -18,6 +18,7 @@ def healthz():
     "status": "ok",
     "hostname": "ignored me"#os.environ["HOSTNAME"]
   }
+
   return jsonify(response)
 
 @app.route('/question', methods=['POST'])
@@ -27,19 +28,16 @@ def question():
   crea un nuevo elemento en el API firebase
   utiliza el resultado anterior y envia al API language
   """
-  params = request.get_json()
-  print("parametros: ")
-  print(params)
-  hostinfo = {
-    'sisname': os.uname()[0],
-    'dirMAC': os.uname()[1],
-    'release': os.uname()[2],
-    'version': os.uname()[3],
-    'maquina': os.uname()[4]
-  }
-  params['server'] = hostinfo
-  params['remote_addr'] = request.remote_addr
-  return jsonify(params)
+  response = {}
+  try:
+      json_data = request.get_json()
+      response['status'] = 'succesful'
+      response['message'] = 'The file is writed to filesystem'
+  except Exception as e:
+      response['status'] = 'succesful'
+      response['message'] = 'The file is writed to filesystem'
+
+  return jsonify(json_data)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -47,8 +45,8 @@ def upload():
   utiliza el resultado anterio y lo envia al API vision
   debe retornar un json con el contenido del firebase
   """
+  response = {}
   try:
-      response = {}
       json_data = request.get_json()
       filename = '{}.jpg'.format(str(uuid.uuid4()))
       image = base64.b64decode(json_data['file'])
@@ -56,13 +54,11 @@ def upload():
          f.write(image)
       response['status'] = 'succesful'
       response['message'] = 'The file is writed to filesystem'
-      response = jsonify(response)
   except Exception as e:
       response['status'] = 'failed'
       response['message'] = e
-      response = jsonify(response)
 
-  return response
+  return jsonify(response)
 
 @app.route('/message', methods=['POST'])
 def message():
