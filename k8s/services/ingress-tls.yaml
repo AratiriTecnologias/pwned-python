@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: pwned-python-api
+  namespace: pwned-python-api
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - pwned-python-api.pwned-2017.ml
+    secretName: pwned-python-api-teju-chat-ml-tls
+  rules:
+  - host: pwned-python-api.pwned-2017.ml
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: pwned-python-api
+          servicePort: 8080
