@@ -9,7 +9,7 @@ spec:
   tls:
   - hosts:
     - api.pwned-2017.ml
-    secretName: api-teju-chat-ml-tls
+    secretName: api-pwned-2017-ml-tls
   rules:
   - host: api.pwned-2017.ml
     http:
