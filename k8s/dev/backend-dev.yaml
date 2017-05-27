@@ -23,3 +23,13 @@ spec:
         ports:
         - name: backend
           containerPort: 8080
+        env:
+          - name: FIREBASE
+            value: "http://firebase-sync:8080"
+        volumeMounts:
+          - name: images-store
+            mountPath: /app/downloads
+    volumes:
+      - name: images-store
+        persistentVolumeClaim:
+          claimName: shared-images-store
