@@ -6,7 +6,6 @@ import base64
 import uuid
 import requests
 from flask import Flask, render_template, request, jsonify
-from helper import watermark
 
 app = Flask(__name__)
 
