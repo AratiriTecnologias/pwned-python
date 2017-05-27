@@ -8,10 +8,6 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-  return render_template('index.html', title='Main')
-
 @app.route('/healthz', methods=['GET'])
 def healthz():
   response = {
@@ -50,7 +46,7 @@ def upload():
       json_data = request.get_json()
       filename = '{}.jpg'.format(str(uuid.uuid4()))
       image = base64.b64decode(json_data['file'])
-      with open(os.path.join('download',filename), 'wb') as f:
+      with open(os.path.join(os.environ['DOWNLOADS_LOCATION'], filename), 'wb') as f:
          f.write(image)
       response['status'] = 'succesful'
       response['message'] = 'The file is writed to filesystem'
@@ -83,4 +79,4 @@ def message():
 
 
 if __name__ == "__main__":
-  app.run()
+  app.run(host="0.0.0.0", port="8080")
