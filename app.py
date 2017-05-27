@@ -34,15 +34,24 @@ def question():
   utiliza el resultado anterior y envia al API language
   """
   response = {}
+  question_payload = {}
   try:
       json_data = request.get_json()
-      response['status'] = 'succesful'
-      response['message'] = 'The file is writed to filesystem'
+      question_payload['path'] = '/question'
+      question_payload['method'] = 'push'
+      question_payload['data'] = jsonify(json_data)
+      firebase_url = "%s/publish" % os.environ['FIREBASE']
+      post_question_request = requests.post(firebase_url, data = jsonify(question_payload))
+      if post_question_request.status_code == '201':
+        post_request_payload = post_question_request.json()
+        language_question_url = "%s/question" % os.environ['LANGUAGE']
+        post_language_request = requests.post(language_question_url, data = jsonify(post_request_payload))
+        response = post_language_request
+        
   except Exception as e:
-      response['status'] = 'succesful'
-      response['message'] = 'The file is writed to filesystem'
+      print('Error: {}'.format(e))
 
-  return jsonify(json_data)
+  return jsonify(response)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -72,16 +81,20 @@ def message():
   crea un nuevo elemento en el API firebase
   utiliza el resultado anterior y envia al API language
   """
+  response = {}
   message_payload = {}
   try:
       json_data = request.get_json()
       message_payload['path'] = '/message'
       message_payload['method'] = 'push'
       message_payload['data'] = jsonify(json_data)
-      post_message_request = requests.post(os.environ['FIREBASE'], data = jsonify(message_payload))
+      firebase_url = "%s/publish" % os.environ['FIREBASE']
+      post_message_request = requests.post(firebase_url,, data = jsonify(message_payload))
       if post_message_request.status_code == '201':
           post_request_payload = post_message_request.json()
-          post_language_request = requests.post(os.path.join(os.environ['LANGUAGE'], 'analyze'), data = jsonify(post_request_payload))
+          language_message_url = "%s/message" % os.environ['LANGUAGE']
+          post_language_request = requests.post(os.path.join(language_message_url, 'message'), data = jsonify(post_request_payload))
+          response = post_language_request
 
   except Exception as e:
       print('Error: {}'.format(e))
