@@ -1,6 +1,6 @@
 node {
   def project = 'nube-tech'
-  def appName = 'kuatianee-api'
+  def appName = 'pwned-python-api'
   def feSvcName = "${appName}-backend"
   def imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
 
@@ -38,7 +38,7 @@ node {
         sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
         sh("sed -i.bak 's#DOCKER_IMAGE#${imageTag}#' ./k8s/dev/*.yaml")
 
-        //sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/services/")
+        sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/services/")
         sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/dev/")
   }
 }

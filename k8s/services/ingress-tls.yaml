@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - pwned-python-api.pwned-2017.ml
-    secretName: pwned-python-api-teju-chat-ml-tls
+    - api.pwned-2017.ml
+    secretName: api-teju-chat-ml-tls
   rules:
-  - host: pwned-python-api.pwned-2017.ml
+  - host: api.pwned-2017.ml
     http:
       paths:
       - path: /
