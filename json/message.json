@@ -1,0 +1,11 @@
+{
+  "image_id": "123456456-465456123-5615616",
+  "text" : "This is a message text",
+  "author": {"_id": "1234", "displayName": "Astro"},
+  "mentions": [
+    {"_id" : "12345", "displayName": "Martin"},
+    {"_id" :"12345", "displayName": "Pablo"}  
+  ],
+  "lang": "es",
+  "sentiment": "1"
+}

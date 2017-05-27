@@ -4,6 +4,7 @@ import logging
 import os
 import base64
 import uuid
+import requests
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
@@ -22,6 +23,7 @@ def healthz():
     "status": "ok",
     "hostname": "ignored me"#os.environ["HOSTNAME"]
   }
+
   return jsonify(response)
 
 @app.route('/question', methods=['POST'])
@@ -31,19 +33,16 @@ def question():
   crea un nuevo elemento en el API firebase
   utiliza el resultado anterior y envia al API language
   """
-  params = request.get_json()
-  print("parametros: ")
-  print(params)
-  hostinfo = {
-    'sisname': os.uname()[0],
-    'dirMAC': os.uname()[1],
-    'release': os.uname()[2],
-    'version': os.uname()[3],
-    'maquina': os.uname()[4]
-  }
-  params['server'] = hostinfo
-  params['remote_addr'] = request.remote_addr
-  return jsonify(params)
+  response = {}
+  try:
+      json_data = request.get_json()
+      response['status'] = 'succesful'
+      response['message'] = 'The file is writed to filesystem'
+  except Exception as e:
+      response['status'] = 'succesful'
+      response['message'] = 'The file is writed to filesystem'
+
+  return jsonify(json_data)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -51,8 +50,8 @@ def upload():
   utiliza el resultado anterio y lo envia al API vision
   debe retornar un json con el contenido del firebase
   """
+  response = {}
   try:
-      response = {}
       json_data = request.get_json()
       filename = '{}.jpg'.format(str(uuid.uuid4()))
       image = base64.b64decode(json_data['file'])
@@ -60,13 +59,11 @@ def upload():
          f.write(image)
       response['status'] = 'succesful'
       response['message'] = 'The file is writed to filesystem'
-      response = jsonify(response)
   except Exception as e:
       response['status'] = 'failed'
       response['message'] = e
-      response = jsonify(response)
 
-  return response
+  return jsonify(response)
 
 @app.route('/message', methods=['POST'])
 def message():
@@ -75,19 +72,21 @@ def message():
   crea un nuevo elemento en el API firebase
   utiliza el resultado anterior y envia al API language
   """
-  params = request.get_json()
-  print("parametros: ")
-  print(params)
-  hostinfo = {
-    'sisname': os.uname()[0],
-    'dirMAC': os.uname()[1],
-    'release': os.uname()[2],
-    'version': os.uname()[3],
-    'maquina': os.uname()[4]
-  }
-  params['server'] = hostinfo
-  params['remote_addr'] = request.remote_addr
-  return jsonify(params)
+  message_payload = {}
+  try:
+      json_data = request.get_json()
+      message_payload['path'] = '/message'
+      message_payload['method'] = 'push'
+      message_payload['data'] = jsonify(json_data)
+      post_message_request = requests.post(os.environ['FIREBASE'], data = jsonify(message_payload))
+      if post_message_request.status_code == '201':
+          post_request_payload = post_message_request.json()
+          post_language_request = requests.post(os.path.join(os.environ['LANGUAGE'], 'analyze'), data = jsonify(post_request_payload))
+
+  except Exception as e:
+      print('Error: {}'.format(e))
+
+  return jsonify(response)
 
 
 if __name__ == "__main__":
