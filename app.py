@@ -8,6 +8,14 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+def root_path():
+  response = {
+    "status": "ok",
+    "info": "root_path"
+  }
+  return jsonify(response)
+
 @app.route('/healthz', methods=['GET'])
 def healthz():
   response = {
