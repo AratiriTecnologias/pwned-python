@@ -22,4 +22,4 @@ spec:
         imagePullPolicy: Always
         ports:
         - name: backend
-          containerPort: 5000
+          containerPort: 8080
