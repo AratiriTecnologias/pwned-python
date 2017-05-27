@@ -1,7 +1,0 @@
-curl -X GET -H "Content-type: application/json" http://localhost:5000/healthz
-
-curl -X POST -d @upload.json -H "Content-type: application/json" http://localhost:5000/upload
-curl -X POST -d @question.json -H "Content-type: application/json" http://localhost:5000/question
-curl -X POST -d @message.json -H "Content-type: application/json" http://localhost:5000/message
-
-
