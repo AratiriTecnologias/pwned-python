@@ -29,7 +29,7 @@ spec:
         volumeMounts:
           - name: images-store
             mountPath: /app/downloads
-    volumes:
-      - name: images-store
-        persistentVolumeClaim:
-          claimName: shared-images-store
+      volumes:
+        - name: images-store
+          persistentVolumeClaim:
+            claimName: shared-images-store
