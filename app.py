@@ -78,6 +78,7 @@ def upload():
       #      response = post_vision_request
 
   except Exception as e:
+      response['error'] = 'Error: {}'.format(e)
       print('Error: {}'.format(e))
 
   return jsonify(response)
