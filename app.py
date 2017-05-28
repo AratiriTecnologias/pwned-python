@@ -92,7 +92,7 @@ def upload():
       response['vision_r'] = vision_r.json()
 
       # Update labels on firebase /images/{key}
-      image_path = "/images/%s" % response['firebase_p_r']["key"]
+      image_path = "/images/%s" % response['firebase_up_r']["key"]
       firebase_payload = {
         'path': image_path,
         'method': 'update',
