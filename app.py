@@ -5,9 +5,9 @@ import os
 import base64
 import uuid
 import requests
-import Image
 from flask import Flask, render_template, request, jsonify
 from helper import watermark
+from PIL import Image
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
