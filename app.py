@@ -62,7 +62,8 @@ def upload():
   """
   firebase_url = "%s/publish" % os.environ['FIREBASE']
   vision_upload_url = "%s/detect" % os.environ['VISION']
-  response = {}
+  firebase_payload = {}
+  vision_payload = {}
   try:
       json_data = request.get_json()
       filename = '{}.jpg'.format(str(uuid.uuid4()))
@@ -70,7 +71,7 @@ def upload():
       image = base64.b64decode(json_data['file'])
       with open(filepath, 'wb') as f:
          f.write(image)
-      response['original_file'] = filename
+      vision_payload['original_file'] = filename
 
       firebase_payload['path'] = '/upload'
       firebase_payload['method'] = 'push'
