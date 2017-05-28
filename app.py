@@ -101,7 +101,6 @@ def upload():
       firebase_pub_r = requests.post(firebase_publish_url, json = firebase_payload)
       response['firebase_pub_r'] = firebase_pub_r.json()
 
-
   except Exception as e:
       response['error'] = 'Error: {}'.format(e)
       print('Error: {}'.format(e))
