@@ -71,7 +71,8 @@ def upload():
       response['original_file'] = filename
 
       vision_upload_url = "%s/detect" % os.environ['VISION']
-      response = requests.post(vision_upload_url, json = response)
+      r = requests.post(vision_upload_url, json = response)
+      response = r.json()
       # if post_vision_request.status_code == '200':
       #      response = post_vision_request
 
