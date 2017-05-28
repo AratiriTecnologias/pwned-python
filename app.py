@@ -69,8 +69,6 @@ def upload():
       with open(filepath, 'wb') as f:
          f.write(image)
       response['original_file'] = filename
-      response['status'] = 'succesful'
-      response['message'] = 'The file was written to the filesystem'
 
       vision_upload_url = "%s/detect" % os.environ['VISION']
       response = requests.post(vision_upload_url, data = response)
