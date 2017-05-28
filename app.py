@@ -60,29 +60,46 @@ def upload():
   utiliza el resultado anterio y lo envia al API vision
   debe retornar un json con el contenido del firebase
   """
-  firebase_url = "%s/publish" % os.environ['FIREBASE']
-  vision_upload_url = "%s/detect" % os.environ['VISION']
-  firebase_payload = {}
-  vision_payload = {}
+  firebase_publish_url = "%s/publish" % os.environ['FIREBASE']
+  firebase_upload_url = "%s/upload" % os.environ['FIREBASE']
+  vision_url = "%s/detect" % os.environ['VISION']
+  response = {}
   try:
       json_data = request.get_json()
-      filename = '{}.jpg'.format(str(uuid.uuid4()))
+      fileUUID = str(uuid.uuid4())
+      filename = '{}.jpg'.format(fileUUID)
+      filename_watermark = '{}_watermark.jpg'.format(fileUUID)
       filepath = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename)
+      filepath_watermark = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename_watermark)
       image = base64.b64decode(json_data['file'])
       with open(filepath, 'wb') as f:
          f.write(image)
-      vision_payload['original_file'] = filename
+      with open(filepath_watermark, 'wb') as f:
+         f.write(image)
 
-      firebase_payload['path'] = '/upload'
-      firebase_payload['method'] = 'push'
-      firebase_payload['data'] = filename
-      r = requests.post(firebase_url, json = firebase_payload)
-      response = r.json()
+      # Upload image to storage and push to firebase /images/
+      upload_payload = {
+        'filename': filename_watermark
+      }
+      firebase_up_r = requests.post(firebase_upload_url, json = upload_payload)
+      response['firebase_up_r'] = firebase_up_r.json()
 
-      r = requests.post(vision_upload_url, json = vision_payload)
-      #response = r.json()
-      # if post_vision_request.status_code == '200':
-      #      response = post_vision_request
+      # Get Labels
+      vision_payload = {
+        'original_file': filename
+      }
+      vision_r = requests.post(vision_url, json = vision_payload)
+      response['vision_r'] = vision_r.json()
+
+      # Update labels on firebase /images/{key}
+      image_path = "/images/%s" % response['firebase_p_r']["key"]
+      firebase_payload = {
+        'path': image_path,
+        'method': 'update',
+        'data': response['vision_r']
+      }
+      firebase_pub_r = requests.post(firebase_publish_url, json = firebase_payload)
+      response['firebase_pub_r'] = firebase_pub_r.json()
 
   except Exception as e:
       response['error'] = 'Error: {}'.format(e)
