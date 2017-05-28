@@ -149,6 +149,7 @@ def message():
       response['firebase_pub_tr_r'] = firebase_pub_tr_r.json()
 
   except Exception as e:
+      response['error'] = e
       print('Error: {}'.format(e))
 
   return jsonify(response)
