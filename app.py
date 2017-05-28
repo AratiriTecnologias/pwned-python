@@ -39,7 +39,7 @@ def question():
       json_data = request.get_json()
       question_payload['path'] = '/question'
       question_payload['method'] = 'push'
-      question_payload['data'] = jsonify(json_data)
+      question_payload['data'] = json_data
       firebase_url = "%s/publish" % os.environ['FIREBASE']
       post_question_request = requests.post(firebase_url, json = question_payload)
       if post_question_request.status_code == '201':
@@ -102,7 +102,7 @@ def message():
       json_data = request.get_json()
       message_payload['path'] = '/message'
       message_payload['method'] = 'push'
-      message_payload['data'] = jsonify(json_data)
+      message_payload['data'] = json_data
       firebase_url = "%s/publish" % os.environ['FIREBASE']
       post_message_request = requests.post(firebase_url, json = message_payload)
       if post_message_request.status_code == '201':
