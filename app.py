@@ -7,6 +7,9 @@ import uuid
 import requests
 from flask import Flask, render_template, request, jsonify
 from helper import watermark
+
+from PIL import Image
+
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -78,6 +81,9 @@ def upload():
       with open(filepath, 'wb') as f:
          f.write(image)
 
+      image_watermark_o = Image.open(filepath)
+      image_watermark = watermark(image_watermark_o, 'GDG-CDE-HACKATON-DATAPAR', font_path='OpenSans-Bold.ttf', opacity=0.4, font_scale=0.1, color=(255,255,255))
+      image_watermark.save('{0}/{1}'.format(filepath_watermark, filename_watermark))
       # Upload image to storage and push to firebase /images/
       upload_payload = {
         'filename': filename_watermark
