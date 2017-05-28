@@ -26,6 +26,8 @@ spec:
         env:
           - name: FIREBASE
             value: "http://firebase-sync:8080"
+          - name: TRANSLATE
+            value: "http://translate:8080"
           - name: VISION
             value: "http://vision:8080"
         volumeMounts:

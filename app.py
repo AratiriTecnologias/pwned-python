@@ -7,7 +7,9 @@ import uuid
 import requests
 from flask import Flask, render_template, request, jsonify
 from helper import watermark
+
 from PIL import Image
+
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -35,12 +37,13 @@ def question():
   utiliza el resultado anterior y envia al API language
   """
   response = {}
-  question_payload = {}
   try:
       json_data = request.get_json()
-      question_payload['path'] = '/question'
-      question_payload['method'] = 'push'
-      question_payload['data'] = json_data
+      question_payload = {
+        'path': '/questions',
+        'method': 'push',
+        'data': json_data
+      }
       firebase_url = "%s/publish" % os.environ['FIREBASE']
       post_question_request = requests.post(firebase_url, json = question_payload)
       if post_question_request.status_code == '201':
@@ -73,6 +76,8 @@ def upload():
       filepath = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename)
       filepath_watermark = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename_watermark)
       image = base64.b64decode(json_data['file'])
+      image_watermark = watermark(image, 'GDG-CDE-HACKATON-DATAPAR', font_path='OpenSans-Bold.ttf', opacity=0.4, font_scale=0.1, color=(255,255,255))
+      image_watermark.save('{0}/{1}'.format(filepath_watermark, filename_watermark))
       with open(filepath, 'wb') as f:
          f.write(image)
 
@@ -117,20 +122,32 @@ def message():
   utiliza el resultado anterior y envia al API language
   """
   response = {}
-  message_payload = {}
+  translate_all_url = "%s/translate_all" % os.environ['TRANSLATE']
+  firebase_publish_url = "%s/publish" % os.environ['FIREBASE']
   try:
       json_data = request.get_json()
-      message_payload['path'] = '/message'
-      message_payload['method'] = 'push'
-      message_payload['data'] = json_data
+      message_payload = {
+        'path': '/messages',
+        'method': 'push',
+        'data': json_data
+      }
       firebase_url = "%s/publish" % os.environ['FIREBASE']
-      post_message_request = requests.post(firebase_url, json = message_payload)
-      if post_message_request.status_code == '201':
-        post_request_payload = post_message_request.json()
-        language_message_url = "%s/message" % os.environ['LANGUAGE']
-        post_language_request = requests.post(os.path.join(language_message_url, 'message'), json = post_request_payload)
-        if post_language_request.status_code == '200':
-          response = post_language_request
+      firebase_pub_r = requests.post(firebase_url, json = message_payload)
+      response['firebase_pub_r'] = firebase_pub_r.json()
+
+      translate_payload = {
+        'text': json_data['text']
+      }
+      translate_r = requests.post(translate_all_url, json = translate_payload)
+      response['translate_r'] = translate_r.json()
+
+      firebase_payload = {
+        'path': response['firebase_pub_r']["published"],
+        'method': 'update',
+        'data': response['translate_r']
+      }
+      firebase_pub_tr_r = requests.post(firebase_publish_url, json = firebase_payload)
+      response['firebase_pub_tr_r'] = firebase_pub_tr_r.json()
 
   except Exception as e:
       print('Error: {}'.format(e))
