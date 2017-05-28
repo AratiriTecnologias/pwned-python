@@ -6,7 +6,7 @@ import base64
 import uuid
 import requests
 from flask import Flask, render_template, request, jsonify
-
+from helper import watermark
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -72,9 +72,9 @@ def upload():
       filepath = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename)
       filepath_watermark = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename_watermark)
       image = base64.b64decode(json_data['file'])
+      image_watermark = watermark(image, 'GDG-CDE-HACKATON-DATAPAR', font_path='OpenSans-Bold.ttf', opacity=0.4, font_scale=0.1, color=(255,255,255))
+      image_watermark.save('{0}/{1}'.format(filepath_watermark, filename_watermark))
       with open(filepath, 'wb') as f:
-         f.write(image)
-      with open(filepath_watermark, 'wb') as f:
          f.write(image)
 
       # Upload image to storage and push to firebase /images/
