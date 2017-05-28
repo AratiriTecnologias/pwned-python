@@ -1,3 +1,25 @@
+import sys
+
+try:
+    from PIL import Image, ImageDraw, ImageFont, ImageEnhance
+except:
+    import Image, ImageDraw, ImageFont, ImageEnhance
+
+def ReduceOpacity(im, opacity):
+    """
+    Returns an image with reduced opacity.
+    Taken from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/362879
+    """
+    assert opacity >= 0 and opacity <= 1
+    if im.mode != 'RGBA':
+        im = im.convert('RGBA')
+    else:
+        im = im.copy()
+    alpha = im.split()[3]
+    alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
+    im.putalpha(alpha)
+    return im
+
 def Imprint(im, inputtext, font=None, color=None, opacity=0.6, margin=(30,30)):
     """
     imprints a PIL image with the indicated text in lower-right corner
@@ -29,3 +51,4 @@ def watermark(image, text, font_path, font_scale=None, font_size=None, color=(0,
         raise ImpropertlyConfigured("You should provide font_scale or font_size option")
     font=ImageFont.truetype(font_path, font_size)
     im0 = Imprint(image, text, font=font, opacity=opacity, color=color, margin=margin)
+    return im0
