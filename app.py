@@ -72,11 +72,11 @@ def upload():
       filepath = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename)
       filepath_watermark = os.path.join(os.environ['DOWNLOADS_LOCATION'], filename_watermark)
       image = base64.b64decode(json_data['file'])
-      image_watermark = watermark(image, 'GDG-CDE-HACKATON-DATAPAR', font_path='OpenSans-Bold.ttf', opacity=0.4, font_scale=0.1, color=(255,255,255))
-      image_watermark.save('{0}/{1}'.format(filepath_watermark, filename_watermark))
       with open(filepath, 'wb') as f:
          f.write(image)
 
+      image_watermark = watermark(filepath, 'GDG-CDE-HACKATON-DATAPAR', font_path='OpenSans-Bold.ttf', opacity=0.4, font_scale=0.1, color=(255,255,255))
+      image_watermark.save('{0}/{1}'.format(filepath_watermark, filename_watermark))
       # Upload image to storage and push to firebase /images/
       upload_payload = {
         'filename': filename_watermark
