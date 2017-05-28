@@ -60,6 +60,8 @@ def upload():
   utiliza el resultado anterio y lo envia al API vision
   debe retornar un json con el contenido del firebase
   """
+  firebase_url = "%s/publish" % os.environ['FIREBASE']
+  vision_upload_url = "%s/detect" % os.environ['VISION']
   response = {}
   try:
       json_data = request.get_json()
@@ -70,9 +72,14 @@ def upload():
          f.write(image)
       response['original_file'] = filename
 
-      vision_upload_url = "%s/detect" % os.environ['VISION']
-      r = requests.post(vision_upload_url, json = response)
+      firebase_payload['path'] = '/upload'
+      firebase_payload['method'] = 'push'
+      firebase_payload['data'] = filename
+      r = requests.post(firebase_url, json = firebase_payload)
       response = r.json()
+
+      r = requests.post(vision_upload_url, json = vision_payload)
+      #response = r.json()
       # if post_vision_request.status_code == '200':
       #      response = post_vision_request
 
